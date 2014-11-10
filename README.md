@@ -1,4 +1,4 @@
 mongoose-plugin-auth
 ====================
 
-Mongoose.js plugin to add voting methods to models.
+A [mongoose.js](https://github.com/LearnBoost/mongoose/) plugin to add voting methods to models.
