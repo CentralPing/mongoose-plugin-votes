@@ -1,13 +1,11 @@
 var _ = require('lodash-node/modern');
 var mongoose = require('mongoose');
 
-var defaultOptions = {
-  path: 'votes',
-  model: undefined
-};
-
 module.exports = function votePlugin(schema, options) {
-  options = _.merge({}, defaultOptions, options || {});
+  options = _.merge({
+    path: 'votes',
+    model: undefined
+  }, options || {});
 
   if (!schema.path(options.path)) {
     schema.path(options.path,
