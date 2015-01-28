@@ -17,6 +17,26 @@ describe('Mongoose plugin: votes', function () {
   var user;
   var otherUser;
 
+  beforeAll(function (done) {
+    connection = mongoose.createConnection('mongodb://localhost/unit_test');
+    connection.once('connected', function () {
+      var User = model('User', UserSchema());
+      User.create([{displayName: 'Foo'}, {displayName: 'Bar'}], function (err, _user, _otherUser) {
+        user = _user;
+        otherUser = _otherUser;
+        done();
+      });
+    });
+  });
+
+  afterAll(function (done) {
+    connection.db.dropDatabase(function (err, result) {
+      connection.close(function () {
+        done();
+      });
+    });
+  });
+
   it('should add `votes` methods without model reference', function () {
     var schema = BlogSchema();
     schema.plugin(votes);
@@ -29,22 +49,6 @@ describe('Mongoose plugin: votes', function () {
     schema.plugin(votes, {model: 'User'});
     expect(schema.methods.vote).toBeDefined();
     expect(schema.methods.unvote).toBeDefined();
-  });
-
-  it('should connect to test DB', function (done) {
-    connection = mongoose.createConnection('mongodb://localhost/unit_test');
-    connection.once('connected', function () {
-      done();
-    });
-  });
-
-  it('should save users to DB', function (done) {
-    var User = model('User', UserSchema());
-    User.create([{displayName: 'Foo'}, {displayName: 'Bar'}], function (err, _user, _otherUser) {
-      user = _user;
-      otherUser = _otherUser;
-      done();
-    });
   });
 
   describe('with plugin declaration', function () {
@@ -116,14 +120,6 @@ describe('Mongoose plugin: votes', function () {
         expect(blog.votes.length).toBe(1);
         expect(blog.votes[0].toJSON()).toBe(user.id);
 
-        done();
-      });
-    });
-  });
-
-  it('should drop DB and disconnect', function (done) {
-    connection.db.dropDatabase(function (err, result) {
-      connection.close(function () {
         done();
       });
     });
