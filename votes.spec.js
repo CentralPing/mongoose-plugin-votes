@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var faker = require('faker');
 var votes = require('./votes');
 var Schema = mongoose.Schema;
 
@@ -9,119 +10,136 @@ var Schema = mongoose.Schema;
 delete require.cache.mongoose;
 
 var blogData = {
-  title: 'My first blog! #Super',
-  blog: 'This is my very first #blog! I hope you enjoy it. #WOOHOO'
+  title: faker.lorem.sentence(),
+  blog: faker.lorem.paragraphs()
 };
 
+beforeAll(function (done) {
+  connection = mongoose.createConnection('mongodb://localhost/unit_test');
+  connection.once('connected', function () {
+    done();
+  });
+});
+
+afterAll(function (done) {
+  connection.db.dropDatabase(function (err, result) {
+    connection.close(function () {
+      done();
+    });
+  });
+});
+
 describe('Mongoose plugin: votes', function () {
-  var user;
-  var otherUser;
-
-  beforeAll(function (done) {
-    connection = mongoose.createConnection('mongodb://localhost/unit_test');
-    connection.once('connected', function () {
-      var User = model('User', UserSchema());
-      User.create([{displayName: 'Foo'}, {displayName: 'Bar'}], function (err, _user, _otherUser) {
-        user = _user;
-        otherUser = _otherUser;
-        done();
-      });
-    });
-  });
-
-  afterAll(function (done) {
-    connection.db.dropDatabase(function (err, result) {
-      connection.close(function () {
-        done();
-      });
-    });
-  });
-
-  it('should add `votes` methods without model reference', function () {
-    var schema = BlogSchema();
-    schema.plugin(votes);
-    expect(schema.methods.vote).toBeDefined();
-    expect(schema.methods.unvote).toBeDefined();
-  });
-
-  it('should add `votes` methods with model reference', function () {
-    var schema = BlogSchema();
-    schema.plugin(votes, {model: 'User'});
-    expect(schema.methods.vote).toBeDefined();
-    expect(schema.methods.unvote).toBeDefined();
-  });
+  var schema;
 
   describe('with plugin declaration', function () {
-    var schema;
-
     beforeEach(function () {
       schema = BlogSchema();
     });
 
-    it('should add `votes` to the schema', function () {
-      schema.plugin(votes, {model: 'User'});
-      expect(schema.path('votes')).toBeDefined();
+    it('should add `votes` path, `vote` and `unvote` methods to the schema', function () {
+      schema.plugin(votes);
+      expect(schema.pathType('votes')).toBe('real');
+      expect(schema.path('votes').caster.instance).toBe('String');
+      expect(schema.methods.vote).toBeDefined();
+      expect(schema.methods.unvote).toBeDefined();
+    });
+
+    describe('with options', function () {
+      it('should add `likes` path, `like` and `unlike` methods to the schema', function () {
+        schema.plugin(votes, {path: 'likes', voteMethodName: 'like', unvoteMethodName: 'unlike'});
+        expect(schema.pathType('likes')).toBe('real');
+        expect(schema.path('likes').caster.instance).toBe('String');
+        expect(schema.methods.like).toBeDefined();
+        expect(schema.methods.unlike).toBeDefined();
+      });
+
+      it('should add a reference for `votes` to the schema', function () {
+        schema.plugin(votes, {votesRef: 'User'});
+        expect(schema.pathType('votes')).toBe('real');
+        expect(schema.path('votes').caster.instance).toBe('ObjectID');
+      });
+
+      it('should not allow path type for `votes` to be overwritten', function () {
+        schema.plugin(votes, {pathOptions: {type: String}});
+        expect(schema.path('votes').instance).toBeUndefined();
+      });
+
+      it('should not allow path type for `votes` item to be overwritten', function () {
+        schema.plugin(votes, {votesOptions: {type: Boolean}});
+        expect(schema.path('votes').caster.instance).toBe('String');
+      });
+
+      it('should make `votes` not selected', function () {
+        schema.plugin(votes, {pathOptions: {select: false}});
+        expect(schema.path('votes').selected).toBe(false);
+      });
+
+      it('should make `votes` item not selected', function () {
+        schema.plugin(votes, {votesOptions: {select: false}});
+        expect(schema.path('votes').caster.selected).toBe(false);
+      });
     });
   });
 
   describe('with documents', function () {
     var Blog;
+    var blog;
 
-    it('should compile the model with the votes plugin', function () {
+    beforeAll(function () {
       var schema = BlogSchema();
-      schema.plugin(votes, {model: 'User'});
+      schema.plugin(votes);
 
       Blog = model(schema);
-      expect(Blog).toEqual(jasmine.any(Function));
+    });
+
+    beforeEach(function() {
+      blog = new Blog();
     });
 
     it('should set `votes` to an empty array', function () {
-      expect(Blog().votes).toEqual([]);
+      expect(blog.votes).toEqual([]);
     });
 
-    it('should allow a user to vote only once', function (done) {
-      Blog().save(function (err, blog) {
-        blog.vote(user);
-        expect(blog.votes.length).toBe(1);
-        expect(blog.votes[0].toJSON()).toBe(user.id);
+    it('should allow a voter to vote only once', function () {
+      var voter = faker.name.findName();
 
-        blog.vote(user);
-        expect(blog.votes.length).toBe(1);
+      blog.vote(voter);
+      expect(blog.votes.length).toBe(1);
+      expect(blog.votes[0]).toBe(voter);
 
-        done();
-      });
+      blog.vote(voter);
+      expect(blog.votes.length).toBe(1);
     });
 
-    it('should allow multiple users to vote', function (done) {
-      Blog().save(function (err, blog) {
-        blog.vote(user);
-        expect(blog.votes.length).toBe(1);
-        expect(blog.votes[0].toJSON()).toBe(user.id);
+    it('should allow multiple users to vote', function () {
+      var voter = faker.name.findName();
+      var otherVoter = faker.name.findName();
 
-        blog.vote(otherUser);
-        expect(blog.votes.length).toBe(2);
-        expect(blog.votes[1].toJSON()).toBe(otherUser.id);
+      blog.vote(voter);
+      expect(blog.votes.length).toBe(1);
+      expect(blog.votes[0]).toBe(voter);
 
-        done();
-      });
+      blog.vote(otherVoter);
+      expect(blog.votes.length).toBe(2);
+      expect(blog.votes[1]).toBe(otherVoter);
     });
 
-    it('should allow a user to "unvote" their vote', function (done) {
-      Blog().save(function (err, blog) {
-        blog.vote(user);
-        expect(blog.votes.length).toBe(1);
-        expect(blog.votes[0].toJSON()).toBe(user.id);
+    it('should allow a user to "unvote" their vote', function () {
+      var voter = faker.name.findName();
+      var otherVoter = faker.name.findName();
 
-        blog.vote(otherUser);
-        expect(blog.votes.length).toBe(2);
-        expect(blog.votes[1].toJSON()).toBe(otherUser.id);
+      blog.vote(voter);
+      expect(blog.votes.length).toBe(1);
+      expect(blog.votes[0]).toBe(voter);
 
-        blog.unvote(otherUser);
-        expect(blog.votes.length).toBe(1);
-        expect(blog.votes[0].toJSON()).toBe(user.id);
+      blog.vote(otherVoter);
+      expect(blog.votes.length).toBe(2);
+      expect(blog.votes[1]).toBe(otherVoter);
 
-        done();
-      });
+      blog.unvote(voter);
+      expect(blog.votes.length).toBe(1);
+      expect(blog.votes[0]).toBe(otherVoter);
     });
   });
 });
@@ -142,11 +160,5 @@ function BlogSchema() {
     title: String,
     blog: String,
     created: {type: Date, 'default': Date.now}
-  });
-}
-
-function UserSchema() {
-  return Schema({
-    displayName: String
   });
 }
