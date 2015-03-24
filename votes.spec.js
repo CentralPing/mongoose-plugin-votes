@@ -55,28 +55,28 @@ describe('Mongoose plugin: votes', function () {
       });
 
       it('should add a reference for `votes` to the schema', function () {
-        schema.plugin(votes, {votesRef: 'User'});
+        schema.plugin(votes, {votes: {ref: 'User'}});
         expect(schema.pathType('votes')).toBe('real');
         expect(schema.path('votes').caster.instance).toBe('ObjectID');
       });
 
       it('should not allow path type for `votes` to be overwritten', function () {
-        schema.plugin(votes, {pathOptions: {type: String}});
-        expect(schema.path('votes').instance).toBeUndefined();
+        schema.plugin(votes, {options: {type: String}});
+        expect(schema.path('votes').instance).toBe('Array');
       });
 
       it('should not allow path type for `votes` item to be overwritten', function () {
-        schema.plugin(votes, {votesOptions: {type: Boolean}});
+        schema.plugin(votes, {votes: {options: {type: Boolean}}});
         expect(schema.path('votes').caster.instance).toBe('String');
       });
 
       it('should make `votes` not selected', function () {
-        schema.plugin(votes, {pathOptions: {select: false}});
+        schema.plugin(votes, {options: {select: false}});
         expect(schema.path('votes').selected).toBe(false);
       });
 
       it('should make `votes` item not selected', function () {
-        schema.plugin(votes, {votesOptions: {select: false}});
+        schema.plugin(votes, {votes: {options: {select: false}}});
         expect(schema.path('votes').caster.selected).toBe(false);
       });
     });

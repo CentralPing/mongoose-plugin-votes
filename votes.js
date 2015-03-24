@@ -2,26 +2,27 @@ var mongoose = require('mongoose');
 var _ = require('lodash-node/modern');
 
 module.exports = function votePlugin(schema, options) {
-  /* jshint eqnull: true */
   options = _.merge({
     path: 'votes',
-    pathOptions: {},
+    options: {},
     voteMethodName: 'vote',
     unvoteMethodName: 'unvote',
-    votesRef: undefined,
-    votesOptions: {}
+    votes: {
+      ref: undefined,
+      options: {}
+    }
   }, options || {});
 
   schema.path(options.path, _.defaults(
     {type: [
       _.defaults(
-        options.votesRef != null ?
-          {type: mongoose.Schema.Types.ObjectId, ref: options.votesRef} :
+        options.votes.ref ?
+          {type: mongoose.Schema.Types.ObjectId, ref: options.votes.ref} :
           {type: String},
-        options.votesOptions
+        options.votes.options
       )
     ]},
-    options.pathOptions
+    options.options
   ));
 
   schema.method(options.voteMethodName, function (voter) {
