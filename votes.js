@@ -1,4 +1,3 @@
-var mongoose = require('mongoose');
 var _ = require('lodash-node/modern');
 
 module.exports = function votePlugin(schema, options) {
@@ -17,7 +16,7 @@ module.exports = function votePlugin(schema, options) {
     {type: [
       _.defaults(
         options.votes.ref ?
-          {type: mongoose.Schema.Types.ObjectId, ref: options.votes.ref} :
+          {type: schema.constructor.Types.ObjectId, ref: options.votes.ref} :
           {type: String},
         options.votes.options
       )
