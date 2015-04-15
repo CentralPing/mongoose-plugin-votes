@@ -98,7 +98,7 @@ describe('Mongoose plugin: votes', function () {
     });
 
     it('should set `votes` to an empty array', function () {
-      expect(blog.votes).toEqual([]);
+      expect(blog.votes.length).toBe(0);
     });
 
     it('should allow a voter to vote only once', function () {
