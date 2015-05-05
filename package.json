@@ -1,6 +1,6 @@
 {
   "name": "mongoose-plugin-votes",
-  "version": "1.2.0-rc2",
+  "version": "1.2.0",
   "description": "Mongoose.js plugin to add voting methods to models.",
   "main": "votes.js",
   "dependencies": {
@@ -9,19 +9,23 @@
   "devDependencies": {
     "faker": "^2.1.2",
     "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
     "gulp-debug": "^2.0.1",
     "gulp-if": "^1.2.5",
     "gulp-jasmine": "^2.0.0",
+    "gulp-jsdoc-to-markdown": "^1.0.2",
     "gulp-jshint": "^1.9.2",
     "gulp-todo": "^2.5.0",
-    "yargs": "^3.5.3",
-    "mongoose": "^4.0.0"
+    "gulp-util": "^3.0.4",
+    "mongoose": "^4.0.0",
+    "yargs": "^3.5.3"
   },
   "peerDependencies": {
     "mongoose": ">=4"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "docs": "jsdoc2md lib/*.js > api.md"
   },
   "repository": {
     "type": "git",

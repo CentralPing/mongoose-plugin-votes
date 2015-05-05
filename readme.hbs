@@ -1,0 +1,44 @@
+mongoose-plugin-auth
+====================
+
+[ ![Codeship Status for CentralPing/mongoose-plugin-votes](https://codeship.com/projects/5e028730-4b42-0132-fafd-5634b05c27e4/status)](https://codeship.com/projects/46705)
+
+A [mongoose.js](https://github.com/LearnBoost/mongoose/) plugin that provides `vote` and `unvote` methods for model instances. The method names are configurable (e.g. `like` and `unlike`).
+
+*Note: document changes are not persisted until document is saved.*
+
+## API Reference
+{{#module name="mongoose-plugin-votes"~}}
+{{>body~}}
+{{>members~}}
+{{/module}}
+
+## Examples
+
+### With Strings
+```js
+var votesPlugin = require('mongoose-plugin-votes');
+var schema = Schema({foo: String});
+schema.plugin(votesPlugin);
+
+var Foo = mongoose.model('Foo', schema);
+var foo = Foo(); // foo.tags --> []
+foo.vote('candy'); // foo.tags --> ['candy']
+foo.vote('candy'); // foo.tags --> ['candy']
+foo.vote('ice cream'); // foo.tags --> ['candy', 'ice cream']
+foo.unvote('candy'); // foo.tags --> ['ice cream']
+```
+
+### With References
+```js
+var votesPlugin = require('mongoose-plugin-votes');
+var schema = Schema({foo: String});
+schema.plugin(votesPlugin, {votes: {ref: 'UserModel'}});
+
+var Foo = mongoose.model('Foo', schema);
+var foo = Foo(); // foo.tags --> []
+foo.vote(userA); // foo.tags --> [{_id: '507f191e810c19729de860ea'}]
+foo.vote(userA.id); // foo.tags --> [{_id: '507f191e810c19729de860ea'}]
+foo.vote(userB); // foo.tags --> [{_id: '507f191e810c19729de860ea'}, {_id: '507f191e810c19729de970fb'}]
+foo.unvote(userA); // foo.tags --> [{_id: '507f191e810c19729de970fb'}]
+```
