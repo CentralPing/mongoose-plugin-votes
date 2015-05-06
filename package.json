@@ -12,13 +12,13 @@
     "gulp-concat": "^2.5.2",
     "gulp-debug": "^2.0.1",
     "gulp-if": "^1.2.5",
-    "gulp-jasmine": "^2.0.0",
+    "gulp-jasmine": "^2.0.1",
     "gulp-jsdoc-to-markdown": "^1.0.2",
-    "gulp-jshint": "^1.9.2",
-    "gulp-todo": "^2.5.0",
+    "gulp-jshint": "^1.10.0",
+    "gulp-todo": "^2.6.0",
     "gulp-util": "^3.0.4",
-    "mongoose": "^4.0.0",
-    "yargs": "^3.5.3"
+    "mongoose": "^4.0.2",
+    "yargs": "^3.8.0"
   },
   "peerDependencies": {
     "mongoose": ">=4"

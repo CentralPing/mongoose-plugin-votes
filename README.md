@@ -59,11 +59,11 @@ var schema = Schema({foo: String});
 schema.plugin(votesPlugin);
 
 var Foo = mongoose.model('Foo', schema);
-var foo = Foo(); // foo.tags --> []
-foo.vote('candy'); // foo.tags --> ['candy']
-foo.vote('candy'); // foo.tags --> ['candy']
-foo.vote('ice cream'); // foo.tags --> ['candy', 'ice cream']
-foo.unvote('candy'); // foo.tags --> ['ice cream']
+var foo = Foo(); // foo.votes --> []
+foo.vote('candy'); // foo.votes --> ['candy']
+foo.vote('candy'); // foo.votes --> ['candy']
+foo.vote('ice cream'); // foo.votes --> ['candy', 'ice cream']
+foo.unvote('candy'); // foo.votes --> ['ice cream']
 ```
 
 ### With References
@@ -73,9 +73,9 @@ var schema = Schema({foo: String});
 schema.plugin(votesPlugin, {votes: {ref: 'UserModel'}});
 
 var Foo = mongoose.model('Foo', schema);
-var foo = Foo(); // foo.tags --> []
-foo.vote(userA); // foo.tags --> [{_id: '507f191e810c19729de860ea'}]
-foo.vote(userA.id); // foo.tags --> [{_id: '507f191e810c19729de860ea'}]
-foo.vote(userB); // foo.tags --> [{_id: '507f191e810c19729de860ea'}, {_id: '507f191e810c19729de970fb'}]
-foo.unvote(userA); // foo.tags --> [{_id: '507f191e810c19729de970fb'}]
+var foo = Foo(); // foo.votes --> []
+foo.vote(userA); // foo.votes --> [{_id: '507f191e810c19729de860ea'}]
+foo.vote(userA.id); // foo.votes --> [{_id: '507f191e810c19729de860ea'}]
+foo.vote(userB); // foo.votes --> [{_id: '507f191e810c19729de860ea'}, {_id: '507f191e810c19729de970fb'}]
+foo.unvote(userA); // foo.votes --> [{_id: '507f191e810c19729de970fb'}]
 ```
