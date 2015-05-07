@@ -1,9 +1,11 @@
+'use strict';
 /* jshint node: true, jasmine: true */
 
 var mongoose = require('mongoose');
 var faker = require('faker');
 var votes = require('./votes');
 var Schema = mongoose.Schema;
+var connection;
 
 // Mongoose uses internal caching for models.
 // While {cache: false} works with most models, models using references
@@ -36,7 +38,7 @@ describe('Mongoose plugin: votes', function () {
 
   describe('with plugin declaration', function () {
     beforeEach(function () {
-      schema = BlogSchema();
+      schema = blogSchema();
     });
 
     it('should add `votes` path, `vote` and `unvote` methods to the schema', function () {
@@ -89,7 +91,7 @@ describe('Mongoose plugin: votes', function () {
     var blog;
 
     beforeAll(function () {
-      var schema = BlogSchema();
+      var schema = blogSchema();
       schema.plugin(votes);
 
       Blog = model(schema);
@@ -157,8 +159,8 @@ function model(name, schema) {
   return connection.model(name, schema, name);
 }
 
-function BlogSchema() {
-  return Schema({
+function blogSchema() {
+  return new Schema({
     title: String,
     blog: String,
     created: {type: Date, 'default': Date.now}

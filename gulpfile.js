@@ -1,3 +1,4 @@
+'use strict';
 var fs = require('fs');
 var args = require('yargs').argv;
 var gulp = require('gulp');
