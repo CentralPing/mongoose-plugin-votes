@@ -1,4 +1,5 @@
-/* jshint jasmine: true */
+/* jshint node: true, jasmine: true */
+
 var mongoose = require('mongoose');
 var faker = require('faker');
 var votes = require('./votes');
