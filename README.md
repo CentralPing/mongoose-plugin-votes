@@ -2,6 +2,9 @@ mongoose-plugin-auth
 ====================
 
 [ ![Codeship Status for CentralPing/mongoose-plugin-votes](https://codeship.com/projects/5e028730-4b42-0132-fafd-5634b05c27e4/status)](https://codeship.com/projects/46705)
+[![Test Coverage for CentralPing/mongoose-plugin-votes](https://codeclimate.com/github/CentralPing/mongoose-plugin-votes/badges/coverage.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-votes)
+[![Code Climate for CentralPing/mongoose-plugin-votes](https://codeclimate.com/github/CentralPing/mongoose-plugin-votes/badges/gpa.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-votes)
+[ ![Dependency Status for CentralPing/mongoose-plugin-votes](https://david-dm.org/CentralPing/mongoose-plugin-votes.svg)](https://david-dm.org/CentralPing/mongoose-plugin-votes)
 
 A [mongoose.js](https://github.com/LearnBoost/mongoose/) plugin that provides `vote` and `unvote` methods for model instances. The method names are configurable (e.g. `like` and `unlike`).
 
