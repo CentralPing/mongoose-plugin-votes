@@ -82,3 +82,7 @@ foo.vote(userA.id); // foo.votes --> [{_id: '507f191e810c19729de860ea'}]
 foo.vote(userB); // foo.votes --> [{_id: '507f191e810c19729de860ea'}, {_id: '507f191e810c19729de970fb'}]
 foo.unvote(userA); // foo.votes --> [{_id: '507f191e810c19729de970fb'}]
 ```
+
+# License
+
+Apache 2.0
