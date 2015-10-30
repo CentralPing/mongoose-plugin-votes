@@ -1,6 +1,7 @@
 'use strict';
-/* jshint node: true, jasmine: true */
+/* jshint node: true, mocha: true, expr: true */
 
+var expect = require('chai').expect;
 var mongoose = require('mongoose');
 var faker = require('faker');
 var votes = require('./votes');
@@ -24,14 +25,14 @@ var blogData = {
   blog: faker.lorem.paragraphs()
 };
 
-beforeAll(function (done) {
+before(function (done) {
   connection = mongoose.createConnection(connectionString);
   connection.once('connected', function () {
     done();
   });
 });
 
-afterAll(function (done) {
+after(function (done) {
   connection.db.dropDatabase(function (err, result) {
     connection.close(function () {
       done();
@@ -49,45 +50,45 @@ describe('Mongoose plugin: votes', function () {
 
     it('should add `votes` path, `vote` and `unvote` methods to the schema', function () {
       schema.plugin(votes);
-      expect(schema.pathType('votes')).toBe('real');
-      expect(schema.path('votes').caster.instance).toBe('String');
-      expect(schema.methods.vote).toBeDefined();
-      expect(schema.methods.unvote).toBeDefined();
+      expect(schema.pathType('votes')).to.be.equal('real');
+      expect(schema.path('votes').caster.instance).to.be.equal('String');
+      expect(schema.methods.vote).to.be.defined;
+      expect(schema.methods.unvote).to.be.defined;
     });
 
     describe('with options', function () {
       it('should add `likes` path, `like` and `unlike` methods to the schema', function () {
         schema.plugin(votes, {path: 'likes', voteMethodName: 'like', unvoteMethodName: 'unlike'});
-        expect(schema.pathType('likes')).toBe('real');
-        expect(schema.path('likes').caster.instance).toBe('String');
-        expect(schema.methods.like).toBeDefined();
-        expect(schema.methods.unlike).toBeDefined();
+        expect(schema.pathType('likes')).to.be.equal('real');
+        expect(schema.path('likes').caster.instance).to.be.equal('String');
+        expect(schema.methods.like).to.be.defined;
+        expect(schema.methods.unlike).to.be.defined;
       });
 
       it('should add a reference for `votes` to the schema', function () {
         schema.plugin(votes, {votes: {ref: 'User'}});
-        expect(schema.pathType('votes')).toBe('real');
-        expect(schema.path('votes').caster.instance).toBe('ObjectID');
+        expect(schema.pathType('votes')).to.be.equal('real');
+        expect(schema.path('votes').caster.instance).to.be.equal('ObjectID');
       });
 
       it('should not allow path type for `votes` to be overwritten', function () {
         schema.plugin(votes, {options: {type: String}});
-        expect(schema.path('votes').instance).toBe('Array');
+        expect(schema.path('votes').instance).to.be.equal('Array');
       });
 
       it('should not allow path type for `votes` item to be overwritten', function () {
         schema.plugin(votes, {votes: {options: {type: Boolean}}});
-        expect(schema.path('votes').caster.instance).toBe('String');
+        expect(schema.path('votes').caster.instance).to.be.equal('String');
       });
 
       it('should make `votes` not selected', function () {
         schema.plugin(votes, {options: {select: false}});
-        expect(schema.path('votes').selected).toBe(false);
+        expect(schema.path('votes').selected).to.be.equal(false);
       });
 
       it('should make `votes` item not selected', function () {
         schema.plugin(votes, {votes: {options: {select: false}}});
-        expect(schema.path('votes').caster.selected).toBe(false);
+        expect(schema.path('votes').caster.selected).to.be.equal(false);
       });
     });
   });
@@ -96,7 +97,7 @@ describe('Mongoose plugin: votes', function () {
     var Blog;
     var blog;
 
-    beforeAll(function () {
+    before(function () {
       var schema = blogSchema();
       schema.plugin(votes);
 
@@ -108,18 +109,18 @@ describe('Mongoose plugin: votes', function () {
     });
 
     it('should set `votes` to an empty array', function () {
-      expect(blog.votes.length).toBe(0);
+      expect(blog.votes.length).to.be.equal(0);
     });
 
     it('should allow a voter to vote only once', function () {
       var voter = faker.name.findName();
 
       blog.vote(voter);
-      expect(blog.votes.length).toBe(1);
-      expect(blog.votes[0]).toBe(voter);
+      expect(blog.votes.length).to.be.equal(1);
+      expect(blog.votes[0]).to.be.equal(voter);
 
       blog.vote(voter);
-      expect(blog.votes.length).toBe(1);
+      expect(blog.votes.length).to.be.equal(1);
     });
 
     it('should allow multiple users to vote', function () {
@@ -127,12 +128,12 @@ describe('Mongoose plugin: votes', function () {
       var otherVoter = faker.name.findName();
 
       blog.vote(voter);
-      expect(blog.votes.length).toBe(1);
-      expect(blog.votes[0]).toBe(voter);
+      expect(blog.votes.length).to.be.equal(1);
+      expect(blog.votes[0]).to.be.equal(voter);
 
       blog.vote(otherVoter);
-      expect(blog.votes.length).toBe(2);
-      expect(blog.votes[1]).toBe(otherVoter);
+      expect(blog.votes.length).to.be.equal(2);
+      expect(blog.votes[1]).to.be.equal(otherVoter);
     });
 
     it('should allow a user to "unvote" their vote', function () {
@@ -140,16 +141,16 @@ describe('Mongoose plugin: votes', function () {
       var otherVoter = faker.name.findName();
 
       blog.vote(voter);
-      expect(blog.votes.length).toBe(1);
-      expect(blog.votes[0]).toBe(voter);
+      expect(blog.votes.length).to.be.equal(1);
+      expect(blog.votes[0]).to.be.equal(voter);
 
       blog.vote(otherVoter);
-      expect(blog.votes.length).toBe(2);
-      expect(blog.votes[1]).toBe(otherVoter);
+      expect(blog.votes.length).to.be.equal(2);
+      expect(blog.votes[1]).to.be.equal(otherVoter);
 
       blog.unvote(voter);
-      expect(blog.votes.length).toBe(1);
-      expect(blog.votes[0]).toBe(otherVoter);
+      expect(blog.votes.length).to.be.equal(1);
+      expect(blog.votes[0]).to.be.equal(otherVoter);
     });
   });
 });
