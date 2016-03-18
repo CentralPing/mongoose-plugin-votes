@@ -43,6 +43,9 @@ after(function (done) {
 describe('Mongoose plugin: votes', function () {
   var schema;
 
+  // Prevent test timeout on travis
+  this.timeout(5000);
+
   describe('with plugin declaration', function () {
     beforeEach(function () {
       schema = blogSchema();
