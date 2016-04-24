@@ -6,10 +6,7 @@ var mongoose = require('mongoose');
 var faker = require('faker');
 var votes = require('./votes');
 
-var connectionString = 'mongodb://' +
-  (process.env.MONGO_HOST || 'localhost') +
-  (process.env.MONGO_PORT ? ':' + process.env.MONGO_PORT : '') +
-  '/unit_test';
+var connectionString = process.env.MONGO_URL || 'mongodb://localhost/unit_test';
 
 var Schema = mongoose.Schema;
 var connection;
@@ -27,16 +24,12 @@ var blogData = {
 
 before(function (done) {
   connection = mongoose.createConnection(connectionString);
-  connection.once('connected', function () {
-    done();
-  });
+  connection.once('connected', done);
 });
 
 after(function (done) {
   connection.db.dropDatabase(function (err, result) {
-    connection.close(function () {
-      done();
-    });
+    connection.close(done);
   });
 });
 
@@ -53,6 +46,7 @@ describe('Mongoose plugin: votes', function () {
 
     it('should add `votes` path, `vote` and `unvote` methods to the schema', function () {
       schema.plugin(votes);
+
       expect(schema.pathType('votes')).to.be.equal('real');
       expect(schema.path('votes').caster.instance).to.be.equal('String');
       expect(schema.methods.vote).to.be.defined;
@@ -62,6 +56,7 @@ describe('Mongoose plugin: votes', function () {
     describe('with options', function () {
       it('should add `likes` path, `like` and `unlike` methods to the schema', function () {
         schema.plugin(votes, {path: 'likes', voteMethodName: 'like', unvoteMethodName: 'unlike'});
+
         expect(schema.pathType('likes')).to.be.equal('real');
         expect(schema.path('likes').caster.instance).to.be.equal('String');
         expect(schema.methods.like).to.be.defined;
@@ -70,27 +65,32 @@ describe('Mongoose plugin: votes', function () {
 
       it('should add a reference for `votes` to the schema', function () {
         schema.plugin(votes, {votes: {ref: 'User'}});
+
         expect(schema.pathType('votes')).to.be.equal('real');
         expect(schema.path('votes').caster.instance).to.be.equal('ObjectID');
       });
 
       it('should not allow path type for `votes` to be overwritten', function () {
         schema.plugin(votes, {options: {type: String}});
+
         expect(schema.path('votes').instance).to.be.equal('Array');
       });
 
       it('should not allow path type for `votes` item to be overwritten', function () {
         schema.plugin(votes, {votes: {options: {type: Boolean}}});
+
         expect(schema.path('votes').caster.instance).to.be.equal('String');
       });
 
       it('should make `votes` not selected', function () {
         schema.plugin(votes, {options: {select: false}});
+
         expect(schema.path('votes').selected).to.be.equal(false);
       });
 
       it('should make `votes` item not selected', function () {
         schema.plugin(votes, {votes: {options: {select: false}}});
+
         expect(schema.path('votes').caster.selected).to.be.equal(false);
       });
     });
