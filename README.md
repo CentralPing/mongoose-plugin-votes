@@ -6,7 +6,7 @@ mongoose-plugin-votes
 [![Code Climate for CentralPing/mongoose-plugin-votes](https://codeclimate.com/github/CentralPing/mongoose-plugin-votes/badges/gpa.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-votes)
 [![Dependency Status for CentralPing/mongoose-plugin-votes](https://david-dm.org/CentralPing/mongoose-plugin-votes.svg)](https://david-dm.org/CentralPing/mongoose-plugin-votes)
 
-A [mongoose.js](https://github.com/LearnBoost/mongoose/) plugin that provides `vote` and `unvote` methods for model instances. The method names are configurable (e.g. `like` and `unlike`).
+A [mongoose.js](https://github.com/Automattic/mongoose/) plugin that provides `vote` and `unvote` methods for model instances. The method names are configurable (e.g. `like` and `unlike`).
 
 *Note: document changes are not persisted until document is saved.*
 
@@ -22,6 +22,7 @@ var schema = Schema({...});
 schema.plugin(votesPlugin[, OPTIONS]);
 ```
 <a name="module_mongoose-plugin-votes..options"></a>
+
 ### mongoose-plugin-votes~options
 **Kind**: inner property of <code>[mongoose-plugin-votes](#module_mongoose-plugin-votes)</code>  
 
@@ -37,6 +38,7 @@ schema.plugin(votesPlugin[, OPTIONS]);
 | options.votes.options | <code>object</code> |  | votes property options to set (`type` will always be `String`). `(e.g. {votes: {options: {select: false}}})` |
 
 <a name="module_mongoose-plugin-votes..vote"></a>
+
 ### mongoose-plugin-votes~vote(voter)
 The `vote` method appends the passed in value to the `votes` path array
 
@@ -47,6 +49,7 @@ The `vote` method appends the passed in value to the `votes` path array
 | voter | <code>\*</code> | If using a reference pass in the ObjectId or the document |
 
 <a name="module_mongoose-plugin-votes..unvote"></a>
+
 ### mongoose-plugin-votes~unvote(voter)
 The `unvote` method removes the passed in value from the `votes` path array
 
