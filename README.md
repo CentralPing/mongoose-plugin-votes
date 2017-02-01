@@ -1,6 +1,8 @@
 mongoose-plugin-votes
 ====================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/CentralPing/mongoose-plugin-votes.svg)](https://greenkeeper.io/)
+
 [![Codeship Status for CentralPing/mongoose-plugin-votes](https://codeship.com/projects/5e028730-4b42-0132-fafd-5634b05c27e4/status)](https://codeship.com/projects/46705)
 [![Build Status](https://travis-ci.org/CentralPing/mongoose-plugin-votes.svg?branch=master)](https://travis-ci.org/CentralPing/mongoose-plugin-votes)
 [![Code Climate for CentralPing/mongoose-plugin-votes](https://codeclimate.com/github/CentralPing/mongoose-plugin-votes/badges/gpa.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-votes)
