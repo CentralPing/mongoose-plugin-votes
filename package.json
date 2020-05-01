@@ -4,7 +4,8 @@
   "description": "Mongoose.js plugin to add voting methods to models.",
   "main": "votes.js",
   "dependencies": {
-    "lodash": "^4.6.1"
+    "lodash": "^4.6.1",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "chai": "^3.4.0",
@@ -27,7 +28,9 @@
   },
   "scripts": {
     "test": "gulp test",
-    "docs": "jsdoc2md lib/*.js > api.md"
+    "docs": "jsdoc2md lib/*.js > api.md",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -43,5 +46,6 @@
   "bugs": {
     "url": "https://github.com/CentralPing/mongoose-plugin-votes/issues"
   },
-  "homepage": "https://github.com/CentralPing/mongoose-plugin-votes"
+  "homepage": "https://github.com/CentralPing/mongoose-plugin-votes",
+  "snyk": true
 }
